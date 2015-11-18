@@ -21,8 +21,8 @@ def convert_tstamp(response, field_name=None):
             )
         # convert to the right TIME_ZONE before stripping tzinfo
         if utc_datetime and not settings.USE_TZ:
-             local_datetime = timezone.localtime(utc_datetime)
-             return local_datetime.replace(tzinfo=None)
+            local_datetime = timezone.localtime(utc_datetime)
+            return local_datetime.replace(tzinfo=None)
         return utc_datetime
     except KeyError:
         pass
