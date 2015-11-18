@@ -8,16 +8,22 @@ from .conf import settings
 
 def convert_tstamp(response, field_name=None):
     try:
+        utc_datetime = None
         if field_name and response[field_name]:
-            return datetime.datetime.fromtimestamp(
+            utc_datetime = datetime.datetime.fromtimestamp(
                 response[field_name],
-                timezone.utc if settings.USE_TZ else None
+                timezone.utc
             )
         if not field_name:
-            return datetime.datetime.fromtimestamp(
+            utc_datetime = datetime.datetime.fromtimestamp(
                 response,
-                timezone.utc if settings.USE_TZ else None
+                timezone.utc
             )
+        # convert to the right TIME_ZONE before stripping tzinfo
+        if utc_datetime and not settings.USE_TZ:
+             local_datetime = timezone.localtime(utc_datetime)
+             return local_datetime.replace(tzinfo=None)
+        return utc_datetime
     except KeyError:
         pass
     return None
